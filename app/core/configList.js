@@ -3,6 +3,7 @@
 var fs = require('fs')
 var findit = require('findit2')
 require("../util/jsexts.js").obj()
+var path = require('path')
 
 var str = JSON.stringify
 var dbg = console.log
@@ -16,9 +17,8 @@ function isFile(name)
 function isConfigFile(name)
 {
   if (!isFile(name)) return false;
-  var extensionRE = /\.([0-9a-z]+$)/i;
-  var match = extensionRE.exec(name)
-  return match !== null && match[1].toLowerCase().in(configFileExtensions);
+  var ext = path.extname(name).replace('.','')
+  return ext.in(configFileExtensions)
 }
 
 function findConfigFiles(path,callback)
@@ -36,9 +36,11 @@ function findConfigFiles(path,callback)
 }
 
 module.exports = function(req,res) {
-  console.log('cwd: ' + process.cwd())
-  findConfigFiles(process.cwd() + req.app.get("root"),
+  var basePath = path.join(process.cwd(),req.app.get('root'))
+  dbg('base path: ' + basePath)
+  findConfigFiles(basePath,
                      function(files) {
-                       res.json({ files : files})
+                       var relativeFiles = files.map(f => f.replace(basePath.replace('/','\\'),''))
+                       res.json({ files : relativeFiles})
                      })
 }
