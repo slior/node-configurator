@@ -3,16 +3,13 @@
 var fs = require('fs')
 var findit = require('findit2')
 require("../util/jsexts.js").obj()
+var isFile = require("../util/fsutil.js").isFile
 var path = require('path')
 
 var str = JSON.stringify
 var dbg = console.log
 
 var configFileExtensions = ['properties','config','cfg']
-function isFile(name)
-{
-  return fs.statSync(name).isFile()
-}
 
 function isConfigFile(name)
 {

@@ -2,6 +2,9 @@
 var express = require('express')
 var app = express();
 var bodyParser = require('body-parser')
+var isFile = require("./app/util/fsutil.js").isFile
+var configFile = require("./app/core/configFile.js")
+var path = require('path')
 var dbg = console.log
 var info = console.info
 
@@ -33,6 +36,16 @@ router.use((req,res,next) => {
 
 router.get('/',function(req,res) {
   res.json({ message : "Configurator ON"})
+})
+
+router.get('/s/*',function(req,res) {
+  var filename = path.join(process.cwd(),req.path.replace(CONFIGS_PATH,""))
+  dbg("Getting " + filename)
+  if (isFile(filename))
+    res.json(configFile.readFile(filename))
+  else
+    res.sendStatus(404)
+
 })
 
 router.get(CONFIGS_PATH,require('./app/core/configList.js'))
