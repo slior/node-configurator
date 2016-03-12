@@ -4,6 +4,7 @@ var app = express();
 var bodyParser = require('body-parser')
 var isFile = require("./app/util/fsutil.js").isFile
 var configFile = require("./app/core/configFile.js")
+var configResource = require("./app/core/configResource.js")
 var path = require('path')
 var dbg = console.log
 var info = console.info
@@ -39,36 +40,32 @@ router.get('/',function(req,res) {
 })
 
 router.get('/s/*',function(req,res) {
-  var filename = path.join(process.cwd(),req.path.replace(CONFIGS_PATH,""))
-  dbg("Getting " + filename)
-  if (isFile(filename))
-    res.json(configFile.readFile(filename))
-  else
+  var ret = {}
+  var err = null
+  with (configResource)
   {
-    dbg("Not a file, trying to resolve parent as config file...")
-    var pathObj = path.parse(filename)
-    if (isFile(pathObj.dir))
-    {
-      dbg("Success with: " + pathObj.dir)
-      try {
-        var value = configFile.readProp(pathObj.dir,pathObj.base)
-        var ret = {}
-        ret[pathObj.base] = value
-        res.json(ret)
-      } catch (e) {
-        if (e.err && e.err == configFile.err.PROP_NOT_FOUND) {
-          console.error(e.description)
-          res.status(404).end()
-
-        }
-        else {
-          console.error(e)
-        }
+    var resource = resolve(req.path.replace(CONFIGS_PATH,""))
+    try {
+      switch (resource.type)
+      {
+        case FILE_RESOURCE : ret = configFile.readFile(resource.fspath); break;
+        case PROP_RESOURCE :
+          ret[resource.propName] = configFile.readProp(resource.fspath,resource.propName)
+          break;
+        default : err = "Could not resolve " + req.path; break;
       }
+    } catch (e) {
+      err = (e.err && e.err == configFile.err.PROP_NOT_FOUND) ?
+              e.description : e.toString()
     }
-    else
-      res.status(404).end()
   }
+  if (err)
+  {
+    console.error(err)
+    res.status(404).send(err)
+  }
+  else
+    res.json(ret)
 
 })
 
