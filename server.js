@@ -44,7 +44,31 @@ router.get('/s/*',function(req,res) {
   if (isFile(filename))
     res.json(configFile.readFile(filename))
   else
-    res.sendStatus(404)
+  {
+    dbg("Not a file, trying to resolve parent as config file...")
+    var pathObj = path.parse(filename)
+    if (isFile(pathObj.dir))
+    {
+      dbg("Success with: " + pathObj.dir)
+      try {
+        var value = configFile.readProp(pathObj.dir,pathObj.base)
+        var ret = {}
+        ret[pathObj.base] = value
+        res.json(ret)
+      } catch (e) {
+        if (e.err && e.err == configFile.err.PROP_NOT_FOUND) {
+          console.error(e.description)
+          res.status(404).end()
+
+        }
+        else {
+          console.error(e)
+        }
+      }
+    }
+    else
+      res.status(404).end()
+  }
 
 })
 
