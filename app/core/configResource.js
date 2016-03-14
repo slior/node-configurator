@@ -4,6 +4,7 @@ var isFile = require("../util/fsutil.js").isFile
 const TYPE_FILE = "file"
 const TYPE_PROP = "property"
 
+
 function resolve(resourcePath)
 {
   var filename = path.join(process.cwd(),resourcePath)

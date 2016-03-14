@@ -1,7 +1,6 @@
 
 var should = require('should')
 
-
 var rewire = require('rewire')
 var configList = rewire('../app/core/configList.js')
 
