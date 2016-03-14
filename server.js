@@ -41,7 +41,6 @@ router.get('/',function(req,res) {
 
 router.get('/s/*',function(req,res) {
   var ret = {}
-  var err = null
   with (configResource)
   {
     var resource = resolve(req.path.replace(CONFIGS_PATH,""))
@@ -52,21 +51,16 @@ router.get('/s/*',function(req,res) {
         case PROP_RESOURCE :
           ret[resource.propName] = configFile.readProp(resource.fspath,resource.propName)
           break;
-        default : err = "Could not resolve " + req.path; break;
+        default : throw "Could not resolve " + req.path; break;
       }
+      res.json(ret)
     } catch (e) {
-      err = (e.err && e.err == configFile.err.PROP_NOT_FOUND) ?
-              e.description : e.toString()
+      var err = (e.err && e.err == configFile.err.PROP_NOT_FOUND) ?
+          +    e.description : e.toString()
+      console.error(err)
+      res.status(404).send(err)
     }
   }
-  if (err)
-  {
-    console.error(err)
-    res.status(404).send(err)
-  }
-  else
-    res.json(ret)
-
 })
 
 router.get(CONFIGS_PATH,require('./app/core/configList.js'))
