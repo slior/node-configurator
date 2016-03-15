@@ -28,7 +28,7 @@ function readProp(filename,propName) {
 
 function setProp(filename,propName,value) {
   if (!filename) throw new Error("Invalid filename")
-  if (!propName) throw "Invalid property name"
+  if (!propName) throw new Error("Invalid property name")
 
   const allProps = readFile(filename)
   allProps[propName] = value;
@@ -38,11 +38,11 @@ function setProp(filename,propName,value) {
 }
 
 function removeProp(filename,propName) {
-  if (!filename) throw "Invalid filename"
-  if (!propName) throw "Invalid property name"
+  if (!filename) throw new Error("Invalid filename")
+  if (!propName) throw new Error("Invalid property name")
 
   const allProps = readFile(filename)
-  if (!(delete allProps[propName])) throw "Failed to remove " + propName
+  if (!(delete allProps[propName])) throw new Error("Failed to remove " + propName)
 
   writeProperties(filename,allProps)
 }
