@@ -23,20 +23,15 @@ describe("configList",function() {
       })
     })
   })
+
+  describe("configResourceList",function() {
+    it("should return all config files in the test data",function() {
+      configList.findResources("test",function(result) {
+        result.should.have.property('files').with.lengthOf(2)
+        result.files.should.matchEach(/config[1|2]\.properties/)
+      })
+    })
+  })
+
+
 })
-
-
-var MockFS = {
-  root : [
-    "f1"
-    ,"f2.config"
-    , {
-      d1 : [
-        "f1.1"
-        , "f1.2"
-        , "f1.3.config"
-      ]
-    }
-  ]
-  , isFile : function(fname) { return fname && (fname.indexOf('f') >= 0); }
-}
