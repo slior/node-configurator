@@ -11,20 +11,21 @@ function resources(req,res)
 {
   const ConfigResource = require("../core/configResource.js")
   const configFile = require("../core/configFile.js")
-  var ret = {}
   with (ConfigResource)
   {
     var resource = resolve(req.path.replace(CONFIGS_PATH,""))
     try {
       switch (resource.type)
       {
-        case FILE_RESOURCE : ret = configFile.readFile(resource.fspath); break;
+        case FILE_RESOURCE :
+          res.json(configFile.readFile(resource.fspath))
+          break;
         case PROP_RESOURCE :
-          ret[resource.propName] = configFile.readProp(resource.fspath,resource.propName)
+          res.type(".txt")
+          res.send(configFile.readProp(resource.fspath,resource.propName))
           break;
         default : throw "Could not resolve " + req.path; break;
       }
-      res.json(ret)
     } catch (e) {
       var err = (e.err && e.err == configFile.err.PROP_NOT_FOUND) ?
                   e.description : e.toString()
