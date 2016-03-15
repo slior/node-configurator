@@ -14,7 +14,8 @@ function readFile(filename)
   return ret;
 }
 
-var PROP_NOT_FOUND = 1
+const PROP_NOT_FOUND = 1
+const dbg = console.log
 
 function readProp(filename,propName) {
   var props = readFile(filename)

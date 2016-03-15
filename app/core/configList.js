@@ -32,12 +32,17 @@ function findConfigFiles(path,callback)
   fsWalker.on('end',() => { callback(ret) })
 }
 
-module.exports = function(req,res) {
-  var basePath = path.join(process.cwd(),req.app.get('root'))
+function configResourceList(root,callback)
+{
+  var basePath = path.join(process.cwd(),root)
   dbg('base path: ' + basePath)
   findConfigFiles(basePath,
                      function(files) {
                        var relativeFiles = files.map(f => f.replace(basePath.replace('/','\\'),''))
-                       res.json({ files : relativeFiles})
+                      callback({ files : relativeFiles})
                      })
+}
+
+module.exports = {
+  findResources : configResourceList
 }

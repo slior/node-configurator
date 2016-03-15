@@ -1,13 +1,9 @@
 
-var express = require('express')
-var app = express();
+const express = require('express')
+const app = express();
 var bodyParser = require('body-parser')
-var isFile = require("./app/util/fsutil.js").isFile
-var configFile = require("./app/core/configFile.js")
-var configResource = require("./app/core/configResource.js")
-var path = require('path')
-var dbg = console.log
 var info = console.info
+const REST_API = require('./app/api/rest.js')
 
 app.use(bodyParser.urlencoded({extended : true}));
 app.use(bodyParser.json())
@@ -28,42 +24,17 @@ info("Root path: " + root)
 var port = 8081
 
 var router = express.Router();
-var CONFIGS_PATH = "/s"
 
 router.use((req,res,next) => {
-  dbg("[REQ] " + req.method + " " + req.path);
+  info("[REQ] " + req.method + " " + req.path);
   next();
 })
 
-router.get('/',function(req,res) {
-  res.json({ message : "Configurator ON"})
-})
+router.get('/',REST_API.Heartbeat)
 
-router.get('/s/*',function(req,res) {
-  var ret = {}
-  with (configResource)
-  {
-    var resource = resolve(req.path.replace(CONFIGS_PATH,""))
-    try {
-      switch (resource.type)
-      {
-        case FILE_RESOURCE : ret = configFile.readFile(resource.fspath); break;
-        case PROP_RESOURCE :
-          ret[resource.propName] = configFile.readProp(resource.fspath,resource.propName)
-          break;
-        default : throw "Could not resolve " + req.path; break;
-      }
-      res.json(ret)
-    } catch (e) {
-      var err = (e.err && e.err == configFile.err.PROP_NOT_FOUND) ?
-          +    e.description : e.toString()
-      console.error(err)
-      res.status(404).send(err)
-    }
-  }
-})
+router.get('/s/*',REST_API.Resource)
 
-router.get(CONFIGS_PATH,require('./app/core/configList.js'))
+router.get(REST_API.CONFIGS_PATH,REST_API.ResourceList)
 
 app.use('/config',router);
 
