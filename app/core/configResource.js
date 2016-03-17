@@ -19,7 +19,8 @@ function resolve(resourcePath)
     var pathObj = path.parse(filename)
     if (isFile(pathObj.dir)) {
       ret.type = TYPE_PROP
-      ret.path = pathObj.dir + "/" + pathObj.base
+      // ret.path = pathObj.dir + "/" + pathObj.base
+      ret.path = resourcePath
       ret.fspath = pathObj.dir
       ret.propName = pathObj.base
     }

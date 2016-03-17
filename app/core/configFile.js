@@ -19,11 +19,10 @@ const PROP_NOT_FOUND = 1
 const dbg = console.log
 
 function readProp(filename,propName) {
-  var props = readFile(filename)
-  if (typeof(props[propName]) == "undefined")
+  if (!propExists(filename,propName))
     throw { err : PROP_NOT_FOUND, description : "property not found"}
-  else
-    return props[propName]
+  const props = readFile(filename) //TODO: this is reading the file a 2nd time, should probably fix this.
+  return props[propName]
 }
 
 function setProp(filename,propName,value) {
@@ -57,11 +56,18 @@ function writeProperties(filename,props)
   info("File: " + filename + " updated")
 }
 
+function propExists(filename,propName)
+{
+  const props = readFile(filename)
+  return typeof(props[propName]) != "undefined"
+}
+
 module.exports = {
    readFile : readFile
   , readProp : readProp
   , setProp : setProp
   , removeProp : removeProp
+  , propExists : propExists
   , err : {
     PROP_NOT_FOUND : PROP_NOT_FOUND
   }

@@ -24,8 +24,9 @@ function resources(req,res)
           res.json(configFile.readFile(resource.fspath))
           break;
         case PROP_RESOURCE :
-          res.type(".txt")
-          res.send(configFile.readProp(resource.fspath,resource.propName))
+          respondWithPlainValue(res,configFile.readProp(resource.fspath,resource.propName),200)
+          // res.type(".txt")
+          // res.send(configFile.readProp(resource.fspath,resource.propName))
           break;
         default : throw "Could not resolve " + req.path; break;
       }
@@ -46,22 +47,46 @@ function resourceList(req,res)
 
 function valueFrom(request)
 {
-  return request.body;
+  return request.body || "";
+}
+
+function respondWithPlainValue(response,val,status)
+{
+  response.type(".txt")
+  response.status(status||200).send(val)
 }
 
 function setProp(req,res)
 {
   const resource = ConfigResource.resolve(resourcePathFrom(req))
   if (resource.type != ConfigResource.PROP_RESOURCE)
-    throw new Error("No property to set found")
+    res.status(400).send("No property to set at given path")
 
+  const propExists = configFile.propExists(resource.fspath,resource.propName)
   const newValue = valueFrom(req)
-  if (!newValue) throw new Error("Missing value to set to " + resource.path)
 
   configFile.setProp(resource.fspath,resource.propName,newValue)
   info("Succesfully set value '" + newValue + "' to " + resource.path)
-  resources(req,res)
+  if (propExists)
+    respondWithPlainValue(res,newValue,200)
+  else { //new property created
+    res.set("Location",resource.path)
+    respondWithPlainValue(res,newValue,201)
+  }
 }
+
+function deleteProp(req,res)
+{
+  const resource = ConfigResource.resolve(resourcePathFrom(req))
+  if (resource.type != ConfigResource.PROP_RESOURCE)
+    res.status(400).send("No property to delete")
+
+  configFile.removeProp(resource.fspath,resource.propName)
+  info("Removed " + resource.path)
+
+  res.status(204).send("")
+}
+
 
 function setup(router)
 {
@@ -70,6 +95,8 @@ function setup(router)
   router.get(CONFIGS_PATH,resourceList)
 
   router.post("/s/*",setProp)
+
+  router.delete("/s/*",deleteProp)
 
 }
 
