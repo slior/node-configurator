@@ -4,9 +4,9 @@ function isFile(name)
   try {
     return fs.statSync(name).isFile()
   } catch (e) {
-    console.error(e)
+    //console.error(e)
     return false;
-  } 
+  }
 }
 
 module.exports = {

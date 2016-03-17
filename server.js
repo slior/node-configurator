@@ -5,8 +5,10 @@ var bodyParser = require('body-parser')
 var info = console.info
 const REST_API = require('./app/api/rest.js')
 
-app.use(bodyParser.urlencoded({extended : true}));
-app.use(bodyParser.json())
+//app.use(bodyParser.urlencoded({extended : true}));
+//app.use(bodyParser.json())
+
+app.use(bodyParser.text({type : "text/*"}))
 
 var program = require('commander')
 

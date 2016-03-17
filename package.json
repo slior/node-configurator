@@ -3,7 +3,7 @@
   , "main" : "server.js"
   , "dependencies" : {
         "express" : "~4.0.0"
-      , "body-parser" : "~1.0.1"
+      , "body-parser" : "~1.15.0"
       , "mocha" : "~2.4.5"
       , "should" : "~8.2.2"
       , "rewire" : "~2.5.1"
