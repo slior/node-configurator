@@ -15,7 +15,6 @@ function resources(req,res)
 {
   with (ConfigResource)
   {
-    // var resource = resolve(req.path.replace(CONFIGS_PATH,""))
     var resource = resolve(resourcePathFrom(req))
     try {
       switch (resource.type)
@@ -25,8 +24,6 @@ function resources(req,res)
           break;
         case PROP_RESOURCE :
           respondWithPlainValue(res,configFile.readProp(resource.fspath,resource.propName),200)
-          // res.type(".txt")
-          // res.send(configFile.readProp(resource.fspath,resource.propName))
           break;
         default : throw "Could not resolve " + req.path; break;
       }
@@ -56,37 +53,15 @@ function respondWithPlainValue(response,val,status)
   response.status(status||200).send(val)
 }
 
-function setProp(req,res)
+function writeProp(writeBlock)
 {
-  const resource = ConfigResource.resolve(resourcePathFrom(req))
-  if (resource.type != ConfigResource.PROP_RESOURCE)
-    res.status(400).send("No property to set at given path")
-
-  const propExists = configFile.propExists(resource.fspath,resource.propName)
-  const newValue = valueFrom(req)
-
-  configFile.setProp(resource.fspath,resource.propName,newValue)
-  info("Succesfully set value '" + newValue + "' to " + resource.path)
-  if (propExists)
-    respondWithPlainValue(res,newValue,200)
-  else { //new property created
-    res.set("Location",resource.path)
-    respondWithPlainValue(res,newValue,201)
+  return (rq,rs) => {
+    const resource = ConfigResource.resolve(resourcePathFrom(rq))
+    if (resource.type != ConfigResource.PROP_RESOURCE)
+      rs.status(400).send("Path does not point at a property")
+    writeBlock(rq,rs,resource)
   }
 }
-
-function deleteProp(req,res)
-{
-  const resource = ConfigResource.resolve(resourcePathFrom(req))
-  if (resource.type != ConfigResource.PROP_RESOURCE)
-    res.status(400).send("No property to delete")
-
-  configFile.removeProp(resource.fspath,resource.propName)
-  info("Removed " + resource.path)
-
-  res.status(204).send("")
-}
-
 
 function setup(router)
 {
@@ -94,9 +69,36 @@ function setup(router)
   router.get('/s/*',resources)
   router.get(CONFIGS_PATH,resourceList)
 
-  router.post("/s/*",setProp)
+//POST: update an existing property
+  router.post("/s/*",writeProp((req,res,resource) => {
+    if (!configFile.propExists(resource.fspath,resource.propName))
+      res.status(404).send("Property " + resource.propName + " does not exist")
+    else {
+      const newValue = valueFrom(req)
+      configFile.setProp(resource.fspath,resource.propName,newValue)
+      info("Succesfully updated " + resource.path + " to '" + newValue + "'")
+      respondWithPlainValue(res,newValue,200)
+    }
+  }))
 
-  router.delete("/s/*",deleteProp)
+//PUT: create a new property
+  router.put("/s/*",writeProp( (req,res,resource) => {
+    if (configFile.propExists(resource.fspath,resource.propName))
+      res.status(400).send("Can't create an existing property: " + resource.path)
+    else {
+      const newValue = valueFrom(req)
+      configFile.setProp(resource.fspath,resource.propName,newValue)
+      info("Succesfully created value '" + newValue + "' at " + resource.path)
+      res.set("Location",resource.path)
+      respondWithPlainValue(res,newValue,201)
+    }
+  }))
+
+  router.delete("/s/*",writeProp((req,res,resource) => {
+    configFile.removeProp(resource.fspath,resource.propName)
+    info("Removed " + resource.path)
+    res.status(204).send("")
+  }))
 
 }
 
