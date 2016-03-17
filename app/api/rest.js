@@ -41,9 +41,13 @@ function resourceList(req,res)
   CL.findResources(req.app.get('root'),resources => res.json(resources))
 }
 
+function setup(router)
+{
+  router.get('/',heartbeat)
+  router.get('/s/*',resources)
+  router.get(CONFIGS_PATH,resourceList)
+}
+
 module.exports = {
-    Heartbeat : heartbeat
-  , ResourceList : resourceList
-  , Resource : resources
-  , CONFIGS_PATH : CONFIGS_PATH
+  setupOn : setup
 }

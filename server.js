@@ -30,11 +30,7 @@ router.use((req,res,next) => {
   next();
 })
 
-router.get('/',REST_API.Heartbeat)
-
-router.get('/s/*',REST_API.Resource)
-
-router.get(REST_API.CONFIGS_PATH,REST_API.ResourceList)
+REST_API.setupOn(router)
 
 app.use('/config',router);
 
