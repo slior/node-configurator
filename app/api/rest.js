@@ -5,6 +5,11 @@ const info = console.info
 const ConfigResource = require("../core/configResource.js")
 const configFile = require("../core/configFile.js")
 const resourcePathFrom = request => request.path.replace(CONFIGS_PATH,"")
+//TODO: '/config' here needs to be synched with the value in server.js
+const resourceLocationFrom = (filePath,propName) => "/config" + CONFIGS_PATH + filePath + "/" + propName
+
+const keysOf = obj => Object.keys(obj)
+const mv = require('lodash.mapvalues')
 
 function heartbeat(req,res)
 {
@@ -20,7 +25,14 @@ function resources(req,res)
       switch (resource.type)
       {
         case FILE_RESOURCE :
-          res.json(configFile.readFile(resource.fspath))
+          const ret = mv(configFile.readFile(resource.fspath),(val,key) => {
+            return {
+              value : val
+              , location : resourceLocationFrom(resource.path,key)
+            }
+          })
+
+          res.json(ret)
           break;
         case PROP_RESOURCE :
           respondWithPlainValue(res,configFile.readProp(resource.fspath,resource.propName),200)

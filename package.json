@@ -12,6 +12,7 @@
       , "properties-reader" : "~0.0.15"
       , "commander" : "~2.9.0"
       , "properties" : "~1.2.1"
+      , "lodash.mapvalues" : "~4.2.0"
   }
   , "scripts" : {
     "test" : "mocha"
