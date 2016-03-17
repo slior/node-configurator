@@ -53,7 +53,7 @@ function respondWithPlainValue(response,val,status)
   response.status(status||200).send(val)
 }
 
-function writeProp(writeBlock)
+function propWriteFunc(writeBlock)
 {
   return (rq,rs) => {
     const resource = ConfigResource.resolve(resourcePathFrom(rq))
@@ -70,7 +70,7 @@ function setup(router)
   router.get(CONFIGS_PATH,resourceList)
 
 //POST: update an existing property
-  router.post("/s/*",writeProp((req,res,resource) => {
+  router.post("/s/*",propWriteFunc((req,res,resource) => {
     if (!configFile.propExists(resource.fspath,resource.propName))
       res.status(404).send("Property " + resource.propName + " does not exist")
     else {
@@ -82,7 +82,7 @@ function setup(router)
   }))
 
 //PUT: create a new property
-  router.put("/s/*",writeProp( (req,res,resource) => {
+  router.put("/s/*",propWriteFunc( (req,res,resource) => {
     if (configFile.propExists(resource.fspath,resource.propName))
       res.status(400).send("Can't create an existing property: " + resource.path)
     else {
@@ -94,7 +94,7 @@ function setup(router)
     }
   }))
 
-  router.delete("/s/*",writeProp((req,res,resource) => {
+  router.delete("/s/*",propWriteFunc((req,res,resource) => {
     configFile.removeProp(resource.fspath,resource.propName)
     info("Removed " + resource.path)
     res.status(204).send("")
