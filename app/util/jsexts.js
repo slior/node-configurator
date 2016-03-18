@@ -1,6 +1,6 @@
 
-var dbg = console.log
-var ObjectExts = {
+const dbg = console.log
+const ObjectExts = {
   in : function(arr) {
     if (!arr) return false;
     for (var i = 0; i < arr.length; i++)
@@ -8,6 +8,12 @@ var ObjectExts = {
         return true;
 
     return false;
+  }
+  , values : function() {
+    const a = []
+    for (var k in this)
+      a.push(this[k])
+    return a;
   }
 }
 

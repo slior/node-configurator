@@ -21,4 +21,11 @@ describe("Object Extensions",function() {
       "bbb".in(undefined).should.be.false
     })
   })
+
+  describe("values",function() {
+    it ("should return all values for a simple object", function() {
+      const obj = { a: 1, b : "2"}
+      obj.values().should.eql([1,"2"])
+    })
+  })
 })
