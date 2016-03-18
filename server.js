@@ -4,9 +4,7 @@ const app = express();
 var bodyParser = require('body-parser')
 var info = console.info
 const REST_API = require('./app/api/rest.js')
-
-//app.use(bodyParser.urlencoded({extended : true}));
-//app.use(bodyParser.json())
+const API_BASE = '/config'
 
 app.use(bodyParser.text({type : "text/*"}))
 
@@ -32,9 +30,9 @@ router.use((req,res,next) => {
   next();
 })
 
-REST_API.setupOn(router)
+REST_API.setupOn(router,API_BASE)
 
-app.use('/config',router);
+app.use(API_BASE,router);
 
 app.listen(port);
 console.log("Configurator on at " + port);

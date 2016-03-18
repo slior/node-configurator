@@ -5,8 +5,8 @@ const info = console.info
 const ConfigResource = require("../core/configResource.js")
 const configFile = require("../core/configFile.js")
 const resourcePathFrom = request => request.path.replace(CONFIGS_PATH,"")
-//TODO: '/config' here needs to be synched with the value in server.js
-const resourceLocationFrom = (filePath,propName) => "/config" + CONFIGS_PATH + filePath + "/" + propName
+var baseURL = ""
+const resourceLocationFrom = (filePath,propName) => baseURL + CONFIGS_PATH + filePath + "/" + propName
 
 const keysOf = obj => Object.keys(obj)
 const mv = require('lodash.mapvalues')
@@ -75,8 +75,12 @@ function propWriteFunc(writeBlock)
   }
 }
 
-function setup(router)
+function setup(router,base)
 {
+
+  if (!base) throw new Error("Can't accept a falsy base URL when setting up RESTful service")
+
+  baseURL = base;
   router.get('/',heartbeat)
   router.get('/s/*',resources)
   router.get(CONFIGS_PATH,resourceList)
