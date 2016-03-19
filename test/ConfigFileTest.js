@@ -6,6 +6,12 @@ const CF = rewire("../app/core/configFile.js")
 const dbg = console.log
 const str = JSON.stringify
 
+const ConfigRegistry = require("../app/core/config/ConfigTypeRegistry.js")
+const propsConfig = require("../app/core/config/PropertiesConfigDescriptor.js")
+
+ConfigRegistry.register(propsConfig)
+
+
 const keyCount = obj => Object.keys(obj).length
 
 describe("Config File",function() {
@@ -15,6 +21,7 @@ describe("Config File",function() {
       var originalValue = ""
       var originalPropertiesCount = 0
       const original = CF.readFile(testFile)
+      dbg(original)
       with(original)
       {
         should.not.be.undefined

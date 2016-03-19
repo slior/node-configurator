@@ -10,7 +10,7 @@ describe("ConfigTypeRegistry",function() {
     it("Should register a new valid configuration type object when asked", function() {
       with (ConfigRegistry)
       {
-        const dummy = new ConfigDescriptor("TEST",filename => true)
+        const dummy = new ConfigDescriptor("TEST",filename => true,filename => {}, (fname,props) => {})
         register(dummy)
 
         const configs = configTypes().values()

@@ -25,15 +25,28 @@ function getConfigTypes()
   return registeredTypes;
 }
 
+function findDescriptorFor(filename)
+{
+  return registeredTypes.values()
+                        .find(ct => ct.isConfigFile(filename))
+}
+
 function isConfigFile(filename)
 {
   return isFile(filename) &&
-         typeof(registeredTypes.values()
-                               .find(ct => ct.isConfigFile(filename))) != "undefined"
+         typeof(findDescriptorFor(filename)) != "undefined"
+}
+
+function descriptorFor(filename)
+{
+  const ret = findDescriptorFor(filename)
+  if (!ret) throw new Error("Can't find a configuration descriptor for " + filename)
+  return ret;
 }
 
 module.exports = {
     register : registerConfigType
   , configTypes : getConfigTypes
   , isConfigFile : isConfigFile
+  , descriptorFor : descriptorFor
 }

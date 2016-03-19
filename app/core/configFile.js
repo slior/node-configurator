@@ -1,22 +1,19 @@
 
-const info = console.info
+const registry = require("./config/ConfigTypeRegistry.js")
+
+const PROP_NOT_FOUND = 1
+const dbg = console.log
+// const info = console.info
+
+
+
 /**
   Read a configuration file and return all configurations as key - value pairs in a single object.
  */
 function readFile(filename)
 {
-  var ret = {}
-  var PropReader = require('properties-reader');
-  var props = PropReader(filename)
-  props.each((key,value) => {
-    ret[key] = value
-  })
-
-  return ret;
+  return registry.descriptorFor(filename).readFile(filename)
 }
-
-const PROP_NOT_FOUND = 1
-const dbg = console.log
 
 function readProp(filename,propName) {
   if (!propExists(filename,propName))
@@ -48,12 +45,7 @@ function removeProp(filename,propName) {
 
 function writeProperties(filename,props)
 {
-  const PropWriter = require('properties')
-  const stringifiedProps = PropWriter.stringify(props)
-
-  const fs = require('fs')
-  fs.writeFileSync(filename,stringifiedProps)
-  info("File: " + filename + " updated")
+  registry.descriptorFor(filename).writeFile(filename,props)
 }
 
 function propExists(filename,propName)
