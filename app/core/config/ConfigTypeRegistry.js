@@ -1,13 +1,10 @@
 
 const registeredTypes = {}
-
+const ConfigDescriptor = require('./ConfigDescriptor.js')
+const dbg = console.log
 function isValidConfigType(desc)
 {
-  with ({ t : o => typeof(o) })
-  {
-    return t(desc) == "object" && t(desc.type) == "string" && desc.type
-        && t(desc.isConfigFile) == "function"
-  }
+  return desc.constructor == ConfigDescriptor
 }
 
 function registerConfigType(configTypeDescriptor)
