@@ -1,9 +1,7 @@
 
 
-var fs = require('fs')
 var findit = require('findit2')
 require("../util/jsexts.js").obj()
-var isFile = require("../util/fsutil.js").isFile
 var path = require('path')
 
 const ConfigRegistry = require("./config/ConfigTypeRegistry.js")
@@ -13,9 +11,7 @@ var dbg = console.log
 
 function isConfigFile(name)
 {
-  if (!isFile(name)) return false;
-  return typeof(ConfigRegistry.configTypes().values()
-                       .find(ct => ct.isConfigFile(name))) != "undefined"
+  return ConfigRegistry.isConfigFile(name)
 }
 
 function findConfigFiles(path,callback)

@@ -1,7 +1,12 @@
 
-const registeredTypes = {}
+require("../../util/jsexts.js").obj()
 const ConfigDescriptor = require('./ConfigDescriptor.js')
+const isFile = require("../../util/fsutil.js").isFile
+
+const registeredTypes = {}
 const dbg = console.log
+
+
 function isValidConfigType(desc)
 {
   return desc.constructor == ConfigDescriptor
@@ -20,8 +25,15 @@ function getConfigTypes()
   return registeredTypes;
 }
 
+function isConfigFile(filename)
+{
+  return isFile(filename) &&
+         typeof(registeredTypes.values()
+                               .find(ct => ct.isConfigFile(filename))) != "undefined"
+}
 
 module.exports = {
-  register : registerConfigType
+    register : registerConfigType
   , configTypes : getConfigTypes
+  , isConfigFile : isConfigFile
 }

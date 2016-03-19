@@ -10,7 +10,7 @@ describe("ConfigResource",function() {
         , path : {
             join : (p1,p2) => p1 + "/" + p2
           }
-        , isFile : fname => true
+        , isConfig : fname => true
       })(function() {
         var result = ConfigResource.resolve("file1")
         result.should.be.eql({
@@ -37,7 +37,7 @@ describe("ConfigResource",function() {
               }
             }
           }
-        , isFile : name => name == dummyPath.join("/")
+        , isConfig : name => name == dummyPath.join("/")
       })(function() {
         var testPath = dummyPath.join("/") + "/" + dummyProp
         var result = ConfigResource.resolve(testPath)
@@ -64,7 +64,7 @@ describe("ConfigResource",function() {
               }
             }
           }
-        , isFile : name => false
+        , isConfig : name => false
       })(function() {
         const result = ConfigResource.resolve("/d1/file1")
         result.should.be.eql({
