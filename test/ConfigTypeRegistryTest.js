@@ -16,6 +16,8 @@ describe("ConfigTypeRegistry",function() {
         const configs = configTypes().values()
         configs.length.should.eql(1)
         configs[0].should.eql(dummy)
+
+        configTypes()["TEST"].should.eql(dummy)
       }
     })
 

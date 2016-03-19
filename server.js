@@ -10,13 +10,22 @@ app.use(bodyParser.text({type : "text/*"}))
 
 var program = require('commander')
 
+//Setting up program arguments
 program
   .version('0.0.1')
   .usage("Configurator: config files server")
   .option('-r, --root <dir>', "Root path, relative to current working dir")
   .parse(process.argv)
 
+//Setting up configuration types
+const ConfigRegistry = require("./app/core/config/ConfigTypeRegistry.js")
+const propsConfig = require("./app/core/config/PropertiesConfigDescriptor.js")
 
+ConfigRegistry.register(propsConfig)
+
+app.set('registry',ConfigRegistry)
+
+//Setting up web interface
 var root = program.root || '.'
 app.set('root',root)
 info("Root path: " + root)
@@ -34,5 +43,9 @@ REST_API.setupOn(router,API_BASE)
 
 app.use(API_BASE,router);
 
+
+
+
+//Start listening for requests
 app.listen(port);
 console.log("Configurator on at " + port);

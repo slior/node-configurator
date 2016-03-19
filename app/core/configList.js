@@ -6,16 +6,16 @@ require("../util/jsexts.js").obj()
 var isFile = require("../util/fsutil.js").isFile
 var path = require('path')
 
+const ConfigRegistry = require("./config/ConfigTypeRegistry.js")
+
 var str = JSON.stringify
 var dbg = console.log
-
-var configFileExtensions = ['properties','config','cfg']
 
 function isConfigFile(name)
 {
   if (!isFile(name)) return false;
-  var ext = path.extname(name).replace('.','')
-  return ext.in(configFileExtensions)
+  return typeof(ConfigRegistry.configTypes().values()
+                       .find(ct => ct.isConfigFile(name))) != "undefined"
 }
 
 function findConfigFiles(path,callback)

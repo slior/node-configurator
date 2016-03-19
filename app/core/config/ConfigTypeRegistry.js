@@ -10,7 +10,7 @@ function isValidConfigType(desc)
 function registerConfigType(configTypeDescriptor)
 {
   if (isValidConfigType(configTypeDescriptor))
-    registeredTypes[configTypeDescriptor.type] = configTypeDescriptor
+    registeredTypes[configTypeDescriptor.name] = configTypeDescriptor
   else
     throw new Error("Invalid configuration type descriptor")
 }
