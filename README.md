@@ -39,3 +39,4 @@ A more complete API documentation is pending.
 1. Command line interface
 2. Web UI interface
 3. Support for more configuration types.
+4. REST API documentation
