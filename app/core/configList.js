@@ -34,7 +34,7 @@ function configResourceList(root,callback)
   dbg('base path: ' + basePath)
   findConfigFiles(basePath,
                      function(files) {
-                       var relativeFiles = files.map(f => f.replace(basePath.replace('/','\\'),''))
+                       var relativeFiles = files.map(f => path.join(root,f.replace(basePath.replace('/','\\'),'')))
                       callback({ files : relativeFiles})
                      })
 }

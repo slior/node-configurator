@@ -51,7 +51,15 @@ function resources(req,res)
 function resourceList(req,res)
 {
   const CL = require('../core/configList.js')
-  CL.findResources(req.app.get('root'),resources => res.json(resources))
+  CL.findResources(req.app.get('root'),
+                   configs => {
+                     const files = configs.files
+                     const retValues = files.map(filepath => { return {
+                                                                file : filepath,
+                                                                location : baseURL + CONFIGS_PATH + "/" + filepath.replace(/\\/g,'/')}
+                                                             })
+                     res.json({files : retValues})
+                  })
 }
 
 function valueFrom(request)
