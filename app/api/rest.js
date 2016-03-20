@@ -50,6 +50,9 @@ function resources(req,res)
 
 function resourceList(req,res)
 {
+  const contentTypeRequested = req.accepts(['html','json'])
+  dbg("Requested content type: " + contentTypeRequested)
+
   const CL = require('../core/configList.js')
   CL.findResources(req.app.get('root'),
                    configs => {
@@ -58,8 +61,23 @@ function resourceList(req,res)
                                                                 file : filepath,
                                                                 location : baseURL + CONFIGS_PATH + "/" + filepath.replace(/\\/g,'/')}
                                                              })
-                     res.json({files : retValues})
+                    //  res.json({files : retValues})
+                    respond(res,contentTypeRequested,{files : retValues})
                   })
+}
+
+function respond(resp,contentType,value)
+{
+  switch(contentType.toLowerCase())
+  {
+    case "html" :
+      resp.render("configs",value)
+      break;
+    case "json" :
+    default : resp.json(value)
+      break;
+
+  }
 }
 
 function valueFrom(request)

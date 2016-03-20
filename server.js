@@ -43,6 +43,13 @@ REST_API.setupOn(router,API_BASE)
 
 app.use(API_BASE,router);
 
+//setting up views
+app.set('views','./views')
+app.set('view engine','jade')
+
+// app.get('/', function (req, res) {
+//   res.render('configs', { title: 'Configuration Files'});
+// });
 
 
 

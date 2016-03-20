@@ -1,0 +1,11 @@
+html
+  head
+    title Configuration Files
+  body
+    h2 Local Configuration Files
+
+    ul
+      each f in files
+        li
+          a(href=f.location)
+            | #{f.file}
