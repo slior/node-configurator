@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Configuration List</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
+<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<script src="../lib/knockout-3.4.0.js"></script>
+</head>
+<body>
+  <div id="main" class="container">
+    <h2>Configurations </h2>
+    <ul>
+      <!-- ko foreach: configs -->
+      <li><a data-bind="attr: {href: path}"><span data-bind="text: name"></span></a></li>
+      <!-- /ko -->
+    </ul>
+  </div>
+  <script>
+
+  function ConfigViewModel()
+  {
+    var self = this;
+    self.configs = ko.observableArray();
+
+    self.retrieveData = function() {
+      console.log('Retrieving data...')
+      var request = {
+            url: "/config/s",
+            type: "GET",
+            contentType: "application/json",
+            accept: "application/json",
+            cache: false,
+            dataType: 'json',
+            error: function(jqXHR) {
+                console.log("ajax error " + jqXHR.status);
+            }
+        }
+        
+      $.ajax(request).done(function (data) {
+        console.log("Got response: " + JSON.stringify(data))
+        data.files.forEach(function(config) {
+          self.configs.push({
+              name : config.file
+            , path : config.location
+          })
+        })
+      })
+    }
+
+    self.retrieveData()
+    return this;
+  }
+
+  ko.applyBindings(new ConfigViewModel(), $("#main")[0])
+
+  </script>
+</body>
+</html>

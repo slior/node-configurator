@@ -11,14 +11,17 @@ function resolve(resourcePath)
 {
   var filename = path.join(process.cwd(),resourcePath)
   var ret = {}
+  var pathObj = path.parse(filename)
+
   if (isConfig(filename))
   {
     ret.type = TYPE_FILE
     ret.path = resourcePath
     ret.fspath = filename
+    ret.name = pathObj.base
   }
   else {
-    var pathObj = path.parse(filename)
+
     if (isConfig(pathObj.dir)) {
       ret.type = TYPE_PROP
       ret.path = resourcePath

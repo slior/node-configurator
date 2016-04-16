@@ -43,9 +43,11 @@ REST_API.setupOn(router,API_BASE)
 
 app.use(API_BASE,router);
 
+app.use('/views', express.static(__dirname + '/views'));
+app.use('/lib/',express.static(__dirname + "/lib"));
 //setting up views
-app.set('views','./views')
-app.set('view engine','jade')
+// app.set('views','./views')
+// app.set('view engine','jade')
 
 // app.get('/', function (req, res) {
 //   res.render('configs', { title: 'Configuration Files'});

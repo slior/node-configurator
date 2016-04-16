@@ -1,6 +1,7 @@
 
 const CONFIGS_PATH = "/s"
 const dbg = console.log
+const str = JSON.stringify
 const info = console.info
 const ConfigResource = require("../core/configResource.js")
 const configFile = require("../core/configFile.js")
@@ -31,8 +32,7 @@ function resources(req,res)
               , location : resourceLocationFrom(resource.path,key)
             }
           })
-
-          res.json(ret)
+          respond(res,req,{name : resource.name, values : ret})
           break;
         case PROP_RESOURCE :
           respondWithPlainValue(res,configFile.readProp(resource.fspath,resource.propName),200)
@@ -50,8 +50,6 @@ function resources(req,res)
 
 function resourceList(req,res)
 {
-  const contentTypeRequested = req.accepts(['html','json'])
-  dbg("Requested content type: " + contentTypeRequested)
 
   const CL = require('../core/configList.js')
   CL.findResources(req.app.get('root'),
@@ -61,23 +59,13 @@ function resourceList(req,res)
                                                                 file : filepath,
                                                                 location : baseURL + CONFIGS_PATH + "/" + filepath.replace(/\\/g,'/')}
                                                              })
-                    //  res.json({files : retValues})
-                    respond(res,contentTypeRequested,{files : retValues})
+                    respond(res,req,{files : retValues})
                   })
 }
 
-function respond(resp,contentType,value)
+function respond(resp,req,value)
 {
-  switch(contentType.toLowerCase())
-  {
-    case "html" :
-      resp.render("configs",value)
-      break;
-    case "json" :
-    default : resp.json(value)
-      break;
-
-  }
+  resp.json(value)
 }
 
 function valueFrom(request)
