@@ -22,7 +22,8 @@ The root directory is optional, and let's you pick a specific sub directory to t
 
 ### Usage
 
-At this point, only a RESTful API is supported.
+#### RESTful API
+At this point, there's support for RESTful CRUD API.
 In your favorite REST client, try typing:
 ```
 http://localhost:8081/config/s
@@ -31,6 +32,10 @@ And you should get the list of identified configuration files as a response.
 
 A more complete API documentation is pending.
 
+#### UI
+
+A simple web UI, based on the RESTful API, is available at `/views/ConfigList.html`, which should provide you a simple browsing experience.
+
 ## Adding More Configuration types
 *To Complete*
 
@@ -38,5 +43,9 @@ A more complete API documentation is pending.
 
 1. Command line interface
 2. Web UI interface
+  * ~~Displaying values~~
+  * Updating values
+  * Deleting values
+  * Adding values
 3. Support for more configuration types.
 4. REST API documentation
