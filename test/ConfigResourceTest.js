@@ -9,6 +9,12 @@ describe("ConfigResource",function() {
           process : { cwd : () => "." }
         , path : {
             join : (p1,p2) => p1 + "/" + p2
+            , parse : (f) => {
+                          return {
+                            base : f.split('/')[0]
+                            , dir : f.split('/')[1]
+                          }
+                        }
           }
         , isConfig : fname => true
       })(function() {
@@ -17,6 +23,7 @@ describe("ConfigResource",function() {
             type : ConfigResource.FILE_RESOURCE
           , path : "file1"
           , fspath : "./file1"
+          , name : '.'
         })
       })
     })
