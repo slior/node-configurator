@@ -8,7 +8,7 @@
 <script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
 <script src="../lib/knockout-3.4.0.js"></script>
 <script>
-var urlParams;
+var urlParams = {};
 (window.onpopstate = function () {
     var match,
         pl     = /\+/g,  // Regex for replacing addition symbol with a space
@@ -21,21 +21,78 @@ var urlParams;
        urlParams[decode(match[1])] = decode(match[2]);
 })();
 
+function keysOf(o) {
+  var ret = []
+  for (p in (o || []))
+    ret.push(p)
+  return ret;
+}
 
 </script>
 </head>
 <body>
   <div id="main" class="container">
-    <h2 data-bind=""></h2>
+    <h2 data-bind="text: filename"></h2>
+    <table>
+      <thead>
+        <tr><td>Key</td><td>Value</td></tr>
+      </thead>
+      <tbody>
+        <!-- ko foreach: props -->
+          <tr><td data-bind="text: name"></td><td data-bind="text: value"></td></tr>
+        <!-- /ko -->
+      </tbody>
+    </table>
+
   </div>
   <script>
     function ConfigFileModel()
     {
       var self = this;
-      self.filename = ko.observable()
-      //TODO: complete model + binding to html
+      self.filename = ko.observable(urlParams['file'])
+      self.file = ko.observable()
+      self.props = ko.observableArray()
 
+      self.retrieveData = function() {
+        console.log('Retrieving data for ' + self.filename() + '...')
+        var request = {
+              url: self.filename(),
+              type: "GET",
+              contentType: "application/json",
+              accept: "application/json",
+              cache: false,
+              dataType: 'json',
+              error: function(jqXHR) {
+                  console.log("ajax error " + jqXHR.status);
+              }
+          }
+          //make the request + handle response
+          $.ajax(request).done(function (data) {
+            console.log("Got response: " + JSON.stringify(data))
+            /*
+            {"name":"config1.properties",
+              "values":{
+                "p2":{"value":"v2","location":"/config/s/test/data/config1.properties/p2"},
+                "p1":{"value":"v1","location":"/config/s/test/data/config1.properties/p1"}
+              }
+            }
+            */
+            self.filename(data.name)
+            keysOf(data.values)
+                       .map(function (key) {
+                          return { name : key
+                                  , value : data.values[key].value
+                                  , location : data.values[key].location }
+                        })
+                        .forEach(function(prop) { self.props.push(prop) })
+          })
+      } //end of retrieveData
+
+      self.retrieveData() //initialize the model
+      return this;
     }
+
+    ko.applyBindings(new ConfigFileModel(), $("#main")[0])
   </script>
 </body>
 </html>

@@ -13,7 +13,7 @@
     <h2>Configurations </h2>
     <ul>
       <!-- ko foreach: configs -->
-      <li><a data-bind="attr: {href: path}"><span data-bind="text: name"></span></a></li>
+      <li><a data-bind="attr: {href: view}"><span data-bind="text: name"></span></a></li>
       <!-- /ko -->
     </ul>
   </div>
@@ -37,13 +37,14 @@
                 console.log("ajax error " + jqXHR.status);
             }
         }
-        
+
       $.ajax(request).done(function (data) {
         console.log("Got response: " + JSON.stringify(data))
         data.files.forEach(function(config) {
           self.configs.push({
               name : config.file
             , path : config.location
+            , view : '/views/ConfigFile.html?file=' + config.location
           })
         })
       })
