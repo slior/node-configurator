@@ -39,10 +39,14 @@ function keysOf(o) {
       </thead>
       <tbody>
         <!-- ko foreach: props -->
-          <tr><td data-bind="text: name"></td><td data-bind="text: value"></td></tr>
+          <tr>
+            <td data-bind="text: name"></td>
+            <td><input data-bind="attr: { id: name}, value: value"></input></td>
+          </tr>
         <!-- /ko -->
       </tbody>
     </table>
+    <input type=button onclick="model.updateData()" value="Update"></input>
 
   </div>
   <script>
@@ -69,7 +73,7 @@ function keysOf(o) {
           //make the request + handle response
           $.ajax(request).done(function (data) {
             console.log("Got response: " + JSON.stringify(data))
-            /*
+            /* Example response:
             {"name":"config1.properties",
               "values":{
                 "p2":{"value":"v2","location":"/config/s/test/data/config1.properties/p2"},
@@ -88,11 +92,31 @@ function keysOf(o) {
           })
       } //end of retrieveData
 
+      /**
+        Bulk update the entire property file. Issue a request per property.
+       */
+      self.updateData = function() {
+        self.props()
+            .forEach(function(prop) {
+              $.ajax({
+                type : "POST"
+                , url : prop.location, data : prop.value
+                , contentType : "text/plain", accept : "text/plain"
+                , cache : false, dataType : 'text'
+                , error : function(xhr) { console.error("update request error: " + xhr.status)}
+              })
+              .done(function(data ) {
+                console.log("Update response: " + data)
+              })
+            })
+      } //end of updateData
+
       self.retrieveData() //initialize the model
       return this;
     }
 
-    ko.applyBindings(new ConfigFileModel(), $("#main")[0])
+    var model = new ConfigFileModel();
+    ko.applyBindings(model, $("#main")[0])
   </script>
 </body>
 </html>

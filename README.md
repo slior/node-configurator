@@ -18,7 +18,7 @@ In order to run the tool, in the root directory of all the configuration files y
 
 You can also try `node . --help` for command help.
 
-The root directory is optional, and let's you pick a specific sub directory to treat as the root. It defaults to '.'
+The root directory is optional, and let's you pick a specific sub directory to treat as the root. It defaults to the current working directory ('.').
 
 ### Usage
 
@@ -45,6 +45,8 @@ A simple web UI, based on the RESTful API, is available at `/views/ConfigList.ht
 2. Web UI interface
   * ~~Displaying values~~
   * Updating values
+    * ~~Bulk updating~~
+    * Single property
   * Deleting values
   * Adding values
 3. Support for more configuration types.
