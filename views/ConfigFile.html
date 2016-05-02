@@ -3,9 +3,9 @@
 <head>
 <title>Configuration List</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link href="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/css/bootstrap-combined.min.css" rel="stylesheet">
-<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.0.js"></script>
-<script src="http://netdna.bootstrapcdn.com/twitter-bootstrap/2.3.2/js/bootstrap.min.js"></script>
+<link rel="stylesheet" href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css">
+<script src="http://ajax.aspnetcdn.com/ajax/jquery/jquery-1.9.1.js"></script>
+<script src="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js"></script>
 <script src="../lib/knockout-3.4.0.js"></script>
 <script>
 var urlParams = {};
@@ -28,20 +28,43 @@ function keysOf(o) {
   return ret;
 }
 
+function deletePropAt(key,location)
+{
+  return function() {
+    $.ajax({
+      url : location
+      , type : "DELETE"
+      , success : function(resp) {
+          console.log("Deleting " + key + " successful: " + str(resp))
+          $("#row_" + key).hide()
+      }
+      , error : function(xhr) {
+        console.error("Error when deleting " + key + ": " + xhr.status)
+      }
+    })
+  }
+}
+
+var str = JSON.stringify
+
 </script>
 </head>
 <body>
   <div id="main" class="container">
     <h2 data-bind="text: filename"></h2>
-    <table>
+    <table class="table-border table-hover table">
       <thead>
         <tr><td>Key</td><td>Value</td></tr>
       </thead>
       <tbody>
         <!-- ko foreach: props -->
-          <tr>
-            <td data-bind="text: name"></td>
+          <tr data-bind="attr: {id: 'row_' + name }">
+            <td data-bind="text: name" width="20%"></td>
             <td><input data-bind="attr: { id: name}, value: value"></input></td>
+            <td width="5%" align="left">
+              <span title="Delete this property" style="cursor: pointer"
+                    data-bind="click: deletePropAt(name,location)">&#10008;</span>
+            </td>
           </tr>
         <!-- /ko -->
       </tbody>
@@ -86,7 +109,8 @@ function keysOf(o) {
                        .map(function (key) {
                           return { name : key
                                   , value : data.values[key].value
-                                  , location : data.values[key].location }
+                                  , location : data.values[key].location
+                                 }
                         })
                         .forEach(function(prop) { self.props.push(prop) })
           })
