@@ -60,7 +60,7 @@ var str = JSON.stringify
         <!-- ko foreach: props -->
           <tr data-bind="attr: {id: 'row_' + name }">
             <td data-bind="text: name" width="20%"></td>
-            <td><input data-bind="attr: { id: name}, value: value"></input></td>
+            <td><input data-bind="attr: { id: name}, value: value, event : { change : $parent.valueChanged}"></input></td>
             <td width="5%" align="left">
               <span title="Delete this property" style="cursor: pointer"
                     data-bind="click: deletePropAt(name,location)">&#10008;</span>
@@ -116,28 +116,33 @@ var str = JSON.stringify
           })
       } //end of retrieveData
 
+      //Update the given property
+      function update(prop)
+      {
+        $.ajax({
+          type : "POST"
+          , url : prop.location, data : prop.value
+          , contentType : "text/plain", accept : "text/plain"
+          , cache : false, dataType : 'text'
+          , error : function(xhr) { console.error("update request error: " + xhr.status)}
+        })
+        .done(function(data ) {
+          console.log("Update response: " + data)
+        })
+      }
       /**
         Bulk update the entire property file. Issue a request per property.
        */
       self.updateData = function() {
-        self.props()
-            .forEach(function(prop) {
-              $.ajax({
-                type : "POST"
-                , url : prop.location, data : prop.value
-                , contentType : "text/plain", accept : "text/plain"
-                , cache : false, dataType : 'text'
-                , error : function(xhr) { console.error("update request error: " + xhr.status)}
-              })
-              .done(function(data ) {
-                console.log("Update response: " + data)
-              })
-            })
+        self.props().forEach(update)
       } //end of updateData
+
+
+      self.valueChanged = update
 
       self.retrieveData() //initialize the model
       return this;
-    }
+    } //end of ConfigFileModel
 
     var model = new ConfigFileModel();
     ko.applyBindings(model, $("#main")[0])
