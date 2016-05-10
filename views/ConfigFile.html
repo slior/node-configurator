@@ -46,10 +46,19 @@ function deletePropAt(key,location)
 }
 
 var str = JSON.stringify
+var inBatchUpdateMode = false
+function pageLoaded()
+{
+  $("#chkBatchUpdates").change(function() {
+    $("#btnBatchUpdate").toggleClass("hidden")
+    inBatchUpdateMode = !inBatchUpdateMode
+  })
+}
+
 
 </script>
 </head>
-<body>
+<body onload="pageLoaded()">
   <div id="main" class="container">
     <h2 data-bind="text: filename"></h2>
     <table class="table-border table-hover table">
@@ -69,7 +78,8 @@ var str = JSON.stringify
         <!-- /ko -->
       </tbody>
     </table>
-    <input type=button onclick="model.updateData()" value="Update"></input>
+    <label class="checkbox-inline"><input id="chkBatchUpdates" type="checkbox" value="">Batch Updates</input></label>
+    <input id="btnBatchUpdate" type=button onclick="model.updateData()" value="Update" class="hidden"></input>
 
   </div>
   <script>
@@ -138,7 +148,10 @@ var str = JSON.stringify
       } //end of updateData
 
 
-      self.valueChanged = update
+      self.valueChanged = function(prop) {
+        if (!inBatchUpdateMode)
+          update(prop)
+      }
 
       self.retrieveData() //initialize the model
       return this;
