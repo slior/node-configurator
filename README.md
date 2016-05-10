@@ -46,7 +46,7 @@ A simple web UI, based on the RESTful API, is available at `/views/ConfigList.ht
   * ~~Displaying values~~
   * Updating values
     * ~~Bulk updating~~
-    * Single property
+    * ~~Single property~~
   * ~~Deleting values~~
   * Adding values
 3. Support for more configuration types.
