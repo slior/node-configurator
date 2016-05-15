@@ -45,6 +45,11 @@ function deletePropAt(key,location)
   }
 }
 
+function addProperty(key,value)
+{
+  model.newProperty(key,value)
+}
+
 var str = JSON.stringify
 var inBatchUpdateMode = false
 function pageLoaded()
@@ -78,14 +83,18 @@ function pageLoaded()
         <!-- /ko -->
       </tbody>
     </table>
+    <p title="Add a new property">
+      <button type="button" class="btn btn-default btn-xs" data-toggle="modal" data-target="#newPropDialog">&#x2795;</button>
+    </p>
     <label class="checkbox-inline"><input id="chkBatchUpdates" type="checkbox" value="">Batch Updates</input></label>
-    <input id="btnBatchUpdate" type=button onclick="model.updateData()" value="Update" class="hidden"></input>
+    <button id="btnBatchUpdate" onclick="model.updateData()" value="Update" class="hidden btn-default btn-sm">Update</button>
 
   </div>
   <script>
     function ConfigFileModel()
     {
       var self = this;
+      self.fullFileResourceName = urlParams['file']; //immutable, shouldn't change and hence need not be observed
       self.filename = ko.observable(urlParams['file'])
       self.file = ko.observable()
       self.props = ko.observableArray()
@@ -153,6 +162,26 @@ function pageLoaded()
           update(prop)
       }
 
+      self.newProperty = function(key,value) {
+        var newLocation = self.fullFileResourceName + "/" + key
+        console.log("new location = " + newLocation)
+        $.ajax({
+          type : "PUT"
+          , url : newLocation, data : value
+          , contentType : "text/plain", accept : "text/plain"
+          , cache : false, dataType : 'text'
+          , error : function(xhr) { console.error("new property request error: " + xhr.status)}
+        })
+        .done(function(data ) {
+          console.log("New property response: " + data)
+          self.props.push({
+            name : key
+            , value : data
+            , location : newLocation
+          })
+        })
+      }
+
       self.retrieveData() //initialize the model
       return this;
     } //end of ConfigFileModel
@@ -160,5 +189,32 @@ function pageLoaded()
     var model = new ConfigFileModel();
     ko.applyBindings(model, $("#main")[0])
   </script>
+
+
+  <div id="newPropDialog" class="modal fade" role="dialog">
+    <div class="modal-dialog">
+      <div class="modal-content">
+      <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal">&times;</button>
+        <h4 class="modal-title">New Property</h4>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label for="newPropKey">Key:</label>
+          <input id="newPropKey" class="form-control"></input>
+        </div>
+        <div class="form-group">
+          <label for="newPropValue">Value:</label>
+          <input id="newPropValue" class="form-control"></input>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-default" data-dismiss="modal" onclick="addProperty($('#newPropKey').val(),$('#newPropValue').val())">Add</button>
+        <button type="button" class="btn" data-dismiss="modal">Cancel</button>
+      </div>
+    </div>
+    </div> <!--"modal-dialog" -->
+  </div> <!-- newPropDialog -->
+
 </body>
 </html>
