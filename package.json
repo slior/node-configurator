@@ -1,21 +1,22 @@
 {
-    "name" : "node-configurator"
-  , "main" : "server.js"
-  , "dependencies" : {
-        "express" : "~4.0.0"
-      , "body-parser" : "~1.15.0"
-      , "mocha" : "~2.4.5"
-      , "should" : "~8.2.2"
-      , "rewire" : "~2.5.1"
-      , "findit2" : "~2.2.3"
-      , "node.extend" : "~1.1.5"
-      , "properties-reader" : "~0.0.15"
-      , "commander" : "~2.9.0"
-      , "properties" : "~1.2.1"
-      , "lodash.mapvalues" : "~4.2.0"
+  "name": "node-configurator",
+  "main": "server.js",
+  "dependencies": {
+    "body-parser": "~1.15.0",
+    "commander": "~2.9.0",
+    "express": "~4.0.0",
+    "findit2": "~2.2.3",
+    "lodash.mapvalues": "~4.2.0",
+    "mocha": "~2.4.5",
+    "node.extend": "~1.1.5",
+    "properties": "~1.2.1",
+    "properties-reader": "~0.0.15",
+    "rewire": "~2.5.1",
+    "should": "~8.2.2",
+    "vorpal": "^1.10.10"
+  },
+  "scripts": {
+    "test": "mocha"
+    , "cli" : "node cli.js"
   }
-  , "scripts" : {
-    "test" : "mocha"
-  }
-
 }
