@@ -19,9 +19,6 @@ program
 
 //Setting up configuration types
 const ConfigRegistry = require("./app/core/config/ConfigTypeRegistry.js")
-const propsConfig = require("./app/core/config/PropertiesConfigDescriptor.js")
-
-ConfigRegistry.register(propsConfig)
 
 app.set('registry',ConfigRegistry)
 

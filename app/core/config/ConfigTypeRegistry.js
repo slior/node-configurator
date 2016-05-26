@@ -44,6 +44,11 @@ function descriptorFor(filename)
   return ret;
 }
 
+//Initializing the configuration types. We're counting on Node to cache instances (with require) - so the registered members are kept when being required again and again.
+const propsConfig = require("./PropertiesConfigDescriptor.js")
+registerConfigType(propsConfig)
+
+
 module.exports = {
     register : registerConfigType
   , configTypes : getConfigTypes

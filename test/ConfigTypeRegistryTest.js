@@ -6,6 +6,13 @@ const ConfigRegistry = rewire('../app/core/config/ConfigTypeRegistry.js')
 const ConfigDescriptor = require('../app/core/config/ConfigDescriptor.js')
 
 describe("ConfigTypeRegistry",function() {
+
+  describe('configTypes',function() {
+    it("Should have one type registered on startup", function() {
+      ConfigRegistry.configTypes().values().length.should.eql(1) //note: the 'register' tests add a dummy config type, so order is important here.
+    })
+  })
+
   describe("register",function() {
     it("Should register a new valid configuration type object when asked", function() {
       with (ConfigRegistry)
@@ -14,8 +21,8 @@ describe("ConfigTypeRegistry",function() {
         register(dummy)
 
         const configs = configTypes().values()
-        configs.length.should.eql(1)
-        configs[0].should.eql(dummy)
+        configs.length.should.eql(2)
+        configs[1].should.eql(dummy)
 
         configTypes()["TEST"].should.eql(dummy)
       }
@@ -45,5 +52,8 @@ describe("ConfigTypeRegistry",function() {
       }).should.throw(/Invalid isConfigFile function/)
     })
 
-  })
-})
+  }) //end of 'register' spec
+
+
+
+}) //end of 'ConfigTypeRegistry'

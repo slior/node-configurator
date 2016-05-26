@@ -2,9 +2,7 @@ const vorpal = require('vorpal')();
 
 //Setting up configuration types
 const ConfigRegistry = require("./app/core/config/ConfigTypeRegistry.js")
-const propsConfig = require("./app/core/config/PropertiesConfigDescriptor.js")
-
-ConfigRegistry.register(propsConfig)
+const dbg = console.log
 
 const configList = require('./app/core/configList.js')
 
