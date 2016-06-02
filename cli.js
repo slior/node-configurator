@@ -10,16 +10,25 @@ const configList = require('./app/core/configList.js')
 const ConfigResource = require("./app/core/configResource.js")
 const configFile = require("./app/core/configFile.js")
 
+//Initialize the list of files
+const files = []
+configList.findResources('test',
+                          result => result.files.forEach(filename => files.push(filename))
+                        )
+
 vorpal
   .command('list', 'List available config files')
   .action(function(args, callback) {
     var self = this
-    configList.findResources('test',result => result.files.forEach(filename => self.log(filename)))
+    files.forEach(filename => self.log(filename))
     callback();
   });
 
 vorpal
   .command('props <file>','List properties of a given file')
+  .autocomplete({
+    data : () => files
+  })
   .action(function(args,callback) {
     var self = this
     let CR = ConfigResource
