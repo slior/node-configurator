@@ -32,6 +32,21 @@ And you should get the list of identified configuration files as a response.
 
 A more complete API documentation is pending.
 
+#### Command Line API
+A command line api is also available.  
+In the OS command prompt run:
+```
+npm run cli
+```
+And this will show you a prompt. Type `help` for a list of available commands.  
+You can also give it a root folder:
+```
+npm run cli -- --root <root dir>
+```
+where `<root dir>` is the root directory to look for configuration files. Default is the current directory the command line is running from.
+
+The command line also supports auto-complete of file names and commands. Try pressing `<tab>`.
+
 #### UI
 
 A simple web UI, based on the RESTful API, is available at `/views/ConfigList.html`, which should provide you a simple browsing experience.
