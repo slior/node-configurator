@@ -2,6 +2,18 @@
 
 const vorpal = require('vorpal')();
 
+const program = require('commander')
+
+//Setting up program arguments
+program
+  .version('0.0.1')
+  .usage("Configurator Command Line: config files utility")
+  .option('-r, --root <dir>', "Root path, relative to current working dir")
+  .parse(process.argv)
+
+const root = program.root || '.'
+console.info("Root path: " + root)
+
 //Setting up configuration types
 const ConfigRegistry = require("./app/core/config/ConfigTypeRegistry.js")
 const dbg = console.log
@@ -12,10 +24,11 @@ const configFile = require("./app/core/configFile.js")
 
 //Initialize the list of files
 const files = []
-configList.findResources('test',
+configList.findResources(root,
                           result => result.files.forEach(filename => files.push(filename))
                         )
 
+/// ------------- Setting up commands
 vorpal
   .command('list', 'List available config files')
   .action(function(args, callback) {
@@ -45,6 +58,7 @@ vorpal
     callback()
   });
 
+// General CL configuration, and launch command line
 vorpal
   .delimiter('config>>')
   .show();
