@@ -9,16 +9,32 @@ At this point, only a RESTful API is supported; but a command line interface + U
 
 ## Installation
 
-You will node.js installed. Currently this is tested only on v4.2.3.
+You will need node.js installed. Currently this is tested only on v4.2.3.
 
 Clone this project, and then `npm install`
 
 ## Running
-In order to run the tool, in the root directory of all the configuration files you want to manage just type: `node . [--root <rootdir>]`
+In order to run the tool in web server mode (for RESTful API and web-based UI), in the root directory of all the configuration files you want to manage just type: `node . [--root <rootdir>]`
 
 You can also try `node . --help` for command help.
 
 The root directory is optional, and let's you pick a specific sub directory to treat as the root. It defaults to the current working directory ('.').
+
+### Command Line API
+A command line api is also available.  
+In the OS command prompt run:
+```
+npm run cli
+```
+And this will show you a prompt. Type `help` for a list of available commands.  
+You can also give it a root folder, as in the web server case:
+```
+npm run cli -- --root <root dir>
+```
+where `<root dir>` is the root directory to look for configuration files. Default is the current directory the command line is running from.
+
+The command line also supports auto-complete of file names and commands. Try pressing `<tab>`.
+
 
 ### Usage
 
@@ -31,21 +47,6 @@ http://localhost:8081/config/s
 And you should get the list of identified configuration files as a response.
 
 A more complete API documentation is pending.
-
-#### Command Line API
-A command line api is also available.  
-In the OS command prompt run:
-```
-npm run cli
-```
-And this will show you a prompt. Type `help` for a list of available commands.  
-You can also give it a root folder:
-```
-npm run cli -- --root <root dir>
-```
-where `<root dir>` is the root directory to look for configuration files. Default is the current directory the command line is running from.
-
-The command line also supports auto-complete of file names and commands. Try pressing `<tab>`.
 
 #### UI
 
