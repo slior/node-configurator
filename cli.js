@@ -38,7 +38,7 @@ vorpal
   });
 
 vorpal
-  .command('props <file>','List properties of a given file')
+  .command('file <file>','List properties of a given file')
   .autocomplete({
     data : () => files
   })
@@ -57,6 +57,28 @@ vorpal
 
     callback()
   });
+
+vorpal
+  .command('val <property>', 'Get the value of a given property')
+  .autocomplete({
+    data : () => files
+  })
+  .action(function(args,callback) {
+    const self = this
+    let resource = ConfigResource.resolve(args.property)
+    if (resource.type == ConfigResource.PROP_RESOURCE)
+    {
+      try {
+        let val = configFile.readProp(resource.fspath,resource.propName)
+        self.log(val)
+      } catch (e) {
+        let errMsg = "ERROR: " + ((e.err && e.err == configFile.err.PROP_NOT_FOUND) ? e.description : e.toString())
+        self.log(errMsg)
+      }
+    }
+    else self.log("ERROR: not a property")
+    callback()
+  }) //end of action
 
 // General CL configuration, and launch command line
 vorpal
