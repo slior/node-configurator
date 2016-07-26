@@ -27,6 +27,16 @@ const files = []
 configList.findResources(root,
                           result => result.files.forEach(filename => files.push(filename))
                         )
+/// ----- Utility functions
+
+function doForProperty(propName,onFound,onNotAProp) {
+  let resource = ConfigResource.resolve(propName)
+  if (resource.type == ConfigResource.PROP_RESOURCE)
+    onFound(resource)
+  else
+    onNotAProp()
+}
+
 
 /// ------------- Setting up commands
 vorpal
@@ -80,6 +90,26 @@ vorpal
     callback()
   }) //end of action
 
+vorpal
+  .command('set <property> <value>','Set the value of the given property')
+  .autocomplete({
+    data : () => files
+  })
+  .action(function(args,callback) {
+    const self = this
+    doForProperty(args.property,resource => {
+      try {
+        configFile.setProp(resource.fspath,resource.propName,args.value)
+        self.log(resource.propName + ' = ' + args.value)
+      } catch (e) {
+        let errMsg = "ERROR: " + e.toString()
+        self.log(errMsg)
+      }
+    }, () => self.log('ERROR: not a property'))
+    callback()
+  }) //end of set action
+
+  
 // General CL configuration, and launch command line
 vorpal
   .delimiter('config>>')
