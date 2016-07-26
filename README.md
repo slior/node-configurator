@@ -61,7 +61,7 @@ It supports listing the properties, updating (one by one or bulk), deleting prop
 1. Command line interface
   * ~~Listing files~~
   * ~~Listing properties in a given file~~
-  * Reading a single property value
+  * ~~Reading a single property value~~
   * modifying a property
   * adding a property
   * deleting a property
