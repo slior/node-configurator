@@ -106,6 +106,22 @@ vorpal
     callback()
   }) //end of set action
 
+vorpal
+  .command('del <property>','Delete the given property from the file')
+  .autocomplete({
+    data : () => files
+  })
+  .action(function(args,callback) {
+    const self = this
+    doForProperty(args.property, resource => {
+      try {
+        configFile.removeProp(resource.fspath,resource.propName)
+        self.log('Removed: ' + resource.propName)
+      }
+      catch (e) { self.log(errMsg(e.toString()))}
+    }, () => self.log(errMsg('not a property')))
+    callback()
+  }) //end of del action
 
 // General CL configuration, and launch command line
 vorpal
