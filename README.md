@@ -62,8 +62,8 @@ It supports listing the properties, updating (one by one or bulk), deleting prop
   * ~~Listing files~~
   * ~~Listing properties in a given file~~
   * ~~Reading a single property value~~
-  * modifying a property
-  * adding a property
+  * ~~modifying a property~~
+  * ~~adding a property~~
   * deleting a property
 2. ~~Web UI interface (simple)~~
   * ~~Displaying values~~

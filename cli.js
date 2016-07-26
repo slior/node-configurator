@@ -90,7 +90,7 @@ vorpal
   }) //end of action
 
 vorpal
-  .command('set <property> <value>','Set the value of the given property')
+  .command('set <property> <value>','Set the value of the given property. If a new property name is given, it is added.')
   .autocomplete({
     data : () => files
   })
