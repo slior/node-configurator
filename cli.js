@@ -37,7 +37,7 @@ function doForProperty(propName,onFound,onNotAProp) {
     onNotAProp()
 }
 
-
+function errMsg(msg) { return 'ERROR: ' + (msg ? msg : '')}
 /// ------------- Setting up commands
 vorpal
   .command('list', 'List available config files')
@@ -63,7 +63,7 @@ vorpal
             .map(name => name + " = " + props[name])
             .forEach(o => self.log(o))
     }
-    else self.log("ERROR: not a file")
+    else self.log(errMsg("not a file"))
 
     callback()
   });
@@ -82,11 +82,10 @@ vorpal
         let val = configFile.readProp(resource.fspath,resource.propName)
         self.log(val)
       } catch (e) {
-        let errMsg = "ERROR: " + ((e.err && e.err == configFile.err.PROP_NOT_FOUND) ? e.description : e.toString())
-        self.log(errMsg)
+        self.log(errMsg(((e.err && e.err == configFile.err.PROP_NOT_FOUND) ? e.description : e.toString())))
       }
     }
-    else self.log("ERROR: not a property")
+    else self.log(errMsg('not a property'))
     callback()
   }) //end of action
 
@@ -101,15 +100,13 @@ vorpal
       try {
         configFile.setProp(resource.fspath,resource.propName,args.value)
         self.log(resource.propName + ' = ' + args.value)
-      } catch (e) {
-        let errMsg = "ERROR: " + e.toString()
-        self.log(errMsg)
       }
-    }, () => self.log('ERROR: not a property'))
+      catch (e) { self.log(errMsg(e.toString())) }
+    }, () => self.log(errMsg('not a property')))
     callback()
   }) //end of set action
 
-  
+
 // General CL configuration, and launch command line
 vorpal
   .delimiter('config>>')
